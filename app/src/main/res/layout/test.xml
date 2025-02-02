@@ -1,68 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#D9F6FF"
-    android:padding="16dp">
+    android:background="#D9F6FF">
 
-    <!-- Centered Content -->
-    <LinearLayout
+    <!-- Header -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:background="@color/white"
+        android:elevation="4dp"
+        app:title="MyQuran"
+        app:titleTextColor="@color/black"
+        app:navigationIcon="@drawable/ic_menu"
+        app:menu="@menu/top_menu"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="MyQuran"
-            android:textSize="32sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:text="Light for the Heart,"
-            android:textSize="18sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Guidance for Life"
-            android:textSize="18sp" />
-    </LinearLayout>
-
-    <!-- ImageView for Background -->
-    <androidx.cardview.widget.CardView
+    <!-- Search Bar -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/search_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="30dp"
-        app:cardPreventCornerOverlap="true">
+        android:layout_margin="16dp"
+        app:endIconDrawable="@drawable/ic_search"
+        app:endIconMode="clear_text"
+        app:boxBackgroundMode="filled"
+        android:hint="Cari Surah..."
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
 
-        <ImageView
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Last Read Card -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/last_read_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:padding="16dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        app:layout_constraintTop_toBottomOf="@id/search_bar">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/home"
-            android:scaleType="centerCrop"/>
-    </androidx.cardview.widget.CardView>
+            android:orientation="horizontal">
 
-    <!-- Get Started Button -->
-    <Button
-        android:id="@+id/getStartedButton"
-        android:layout_width="wrap_content"
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_quran_open"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:text="Last Read"
+                    android:textSize="14sp"
+                    android:textColor="@color/black"/>
+                <TextView
+                    android:text="Al-Fatihah: 1, Ayat 1"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"/>
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Tabs Navigation -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Get Started"
-        android:textAllCaps="true"
-        android:textColor="#FFFFFF"
-        android:backgroundTint="#2196F3"
-        android:paddingHorizontal="32dp"
-        android:paddingVertical="12dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="32dp"/>
+        app:tabIndicatorColor="@color/blue"
+        app:tabTextColor="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/last_read_card">
+        <com.google.android.material.tabs.TabItem android:text="Surah"/>
+        <com.google.android.material.tabs.TabItem android:text="Juz"/>
+        <com.google.android.material.tabs.TabItem android:text="Page"/>
+    </com.google.android.material.tabs.TabLayout>
 
-</RelativeLayout>
+    <!-- Surah List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/surahRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="16dp"
+        app:layout_constraintTop_toBottomOf="@id/tab_layout"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"/>
+
+    <!-- Bottom Navigation -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:menu="@menu/bottom_nav_menu"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
