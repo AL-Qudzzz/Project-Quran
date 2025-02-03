@@ -21,8 +21,7 @@
             android:layout_marginBottom="8dp"
             android:text="MyQuran"
             android:textSize="32sp"
-            android:textStyle="bold"
-            android:fontFamily="@font/poppins_font"/>
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -56,17 +55,18 @@
     <!-- Get Started Button -->
     <Button
         android:id="@+id/getStartedButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="240dp"
+        android:layout_height="60dp"
         android:text="Get Started"
         android:textAllCaps="true"
-        android:textColor="#FFFFFF"
-        android:backgroundTint="#D9F6FF"
+        android:textColor="#494CA4"
+        android:textSize="20dp"
+        android:backgroundTint="#88E3FF"
         android:paddingHorizontal="32dp"
         android:paddingVertical="12dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="45dp"
+        android:layout_marginBottom="65dp"
         android:background="@drawable/rounded_corners"/>
 
 

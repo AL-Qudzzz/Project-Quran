@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#D9F6FF"
+    android:padding="16dp">
+
+    <!-- Judul Aplikasi -->
+    <TextView
+        android:id="@+id/txtTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MyQuran"
+        android:textSize="24sp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp" />
+
+    <!-- Read Quran -->
+    <Button
+        android:id="@+id/ReadButton"
+        android:layout_width="350dp"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="550dp"
+        android:background="@drawable/rounded_corners"
+        android:backgroundTint="#88E3FF"
+        android:drawableLeft="@drawable/ic_new_quran"
+        android:paddingHorizontal="32dp"
+        android:paddingVertical="12dp"
+        android:text="Read Qu'ran"
+        android:textAllCaps="true"
+        android:textColor="#494CA4"
+        android:textSize="20dp"/>
+
+    <!-- Adhan Schedule -->
+    <Button
+        android:id="@+id/AdhanButton"
+        android:layout_width="350dp"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="450dp"
+        android:background="@drawable/rounded_corners"
+        android:backgroundTint="#88E3FF"
+        android:drawableLeft="@drawable/hugeicons_adzan"
+        android:paddingHorizontal="32dp"
+        android:paddingVertical="12dp"
+        android:text="Adhan Schedule"
+        android:textAllCaps="true"
+        android:textColor="#494CA4"
+        android:textSize="20dp"/>
+
+    <!-- Qibla Direction -->
+    <Button
+        android:id="@+id/QiblaButton"
+        android:layout_width="350dp"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="350dp"
+        android:background="@drawable/rounded_corners"
+        android:backgroundTint="#88E3FF"
+        android:drawableLeft="@drawable/compas"
+        android:paddingHorizontal="32dp"
+        android:paddingVertical="12dp"
+        android:text="Qibla Direction"
+        android:textAllCaps="true"
+        android:textColor="#494CA4"
+        android:textSize="20dp"/>
+
+    <!-- Settings -->
+    <Button
+        android:id="@+id/SettingsButton"
+        android:layout_width="350dp"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="250dp"
+        android:background="@drawable/rounded_corners"
+        android:backgroundTint="#88E3FF"
+        android:drawableLeft="@drawable/tdesign_setting"
+        android:paddingHorizontal="32dp"
+        android:paddingVertical="12dp"
+        android:text="Settings"
+        android:textAllCaps="true"
+        android:textColor="#494CA4"
+        android:textSize="20dp"/>
+
+
+</RelativeLayout>
