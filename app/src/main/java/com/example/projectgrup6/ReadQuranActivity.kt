@@ -1,6 +1,7 @@
 package com.example.projectgrup6
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,37 +30,49 @@ class ReadQuranActivity : AppCompatActivity() {
     private fun fetchSurahData() {
         thread {
             try {
-                val url = URL("http://api.alquran.cloud/v1/surah")
+                val url = URL("https://api.alquran.cloud/v1/surah") // GANTI KE HTTPS
                 val connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"
-                val response = connection.inputStream.bufferedReader().use { it.readText() }
+                connection.connectTimeout = 5000
+                connection.readTimeout = 5000
 
-                val jsonObject = JSONObject(response)
-                val jsonArray = jsonObject.getJSONArray("data")
+                val responseCode = connection.responseCode
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    val response = connection.inputStream.bufferedReader().use { it.readText() }
 
-                for (i in 0 until jsonArray.length()) {
-                    val surahObj = jsonArray.getJSONObject(i)
-                    val surah = Surah(
-                        nomor = surahObj.getInt("number"),
-                        nama = surahObj.getString("englishName"),
-                        arti = surahObj.getString("englishNameTranslation"),
-                        type = surahObj.getString("revelationType"),
-                        ayat = surahObj.getInt("numberOfAyahs"),
-                        audio = "",  // API ini tidak menyediakan audio secara langsung
-                        keterangan = ""
-                    )
-                    surahList.add(surah)
-                }
+                    val jsonObject = JSONObject(response)
+                    val jsonArray = jsonObject.getJSONArray("data")
 
-                runOnUiThread {
-                    surahRecyclerView.adapter = SurahAdapter(surahList) { surah ->
-                        Toast.makeText(this, "Dipilih: ${surah.nama}", Toast.LENGTH_SHORT).show()
+                    for (i in 0 until jsonArray.length()) {
+                        val surahObj = jsonArray.getJSONObject(i)
+                        val surah = Surah(
+                            nomor = surahObj.getInt("number"),
+                            nama = surahObj.getString("englishName"),
+                            arti = surahObj.getString("englishNameTranslation"),
+                            ayat = surahObj.getInt("numberOfAyahs"),
+                            type = surahObj.getString("revelationType"),
+                            audio = "",
+                            keterangan = ""
+                        )
+                        surahList.add(surah)
+                    }
+
+                    runOnUiThread {
+                        surahRecyclerView.adapter = SurahAdapter(surahList) { surah ->
+                            Toast.makeText(this, "Dipilih: ${surah.nama}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } else {
+                    Log.e("API_ERROR", "Response Code: $responseCode")
+                    runOnUiThread {
+                        Toast.makeText(this, "Gagal mengambil data (Error: $responseCode)", Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: Exception) {
+                Log.e("API_ERROR", "Exception: ${e.message}")
                 e.printStackTrace()
                 runOnUiThread {
-                    Toast.makeText(this, "Gagal mengambil data", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Gagal mengambil data, cek koneksi internet", Toast.LENGTH_SHORT).show()
                 }
             }
         }
