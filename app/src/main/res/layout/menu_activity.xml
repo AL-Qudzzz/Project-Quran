@@ -7,6 +7,24 @@
     android:background="#D9F6FF"
     android:padding="16dp">
 
+    <!-- Background Image -->
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_alignParentBottom="true"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="0dp">
+
+        <ImageView
+            android:id="@+id/backgroundImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/keluarga"/>
+    </androidx.cardview.widget.CardView>
+
+
     <!-- Judul Aplikasi -->
     <TextView
         android:id="@+id/txtTitle"

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/nav_surah"
+        android:icon="@drawable/quranmini"
+        android:title="Surah"/>
+    <item android:id="@+id/nav_adhan"
+        android:icon="@drawable/adhan"
+        android:title="Adhan"/>
+    <item android:id="@+id/nav_prayer"
+        android:icon="@drawable/prayer"
+        android:title="Prayer"/>
+    <item android:id="@+id/nav_shalat"
+        android:icon="@drawable/shalat"
+        android:title="Shalat"/>
+    <item android:id="@+id/nav_bookmark"
+        android:icon="@drawable/bookmark"
+        android:title="Bookmark"/>
+</menu>

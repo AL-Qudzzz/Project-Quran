@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Add Internet Permission if API access is needed -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -24,6 +27,9 @@
 
         <!-- MenuActivity -->
         <activity android:name=".MenuActivity"></activity>
+
+        <!-- ReadQuranActivity -->
+        <activity android:name=".ReadQuranActivity"></activity>
     </application>
 
 </manifest>
