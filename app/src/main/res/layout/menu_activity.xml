@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#D9F6FF"
+    android:background="@drawable/gradient_background"
     android:padding="16dp">
 
     <!-- Background Image -->
@@ -20,8 +20,8 @@
             android:id="@+id/backgroundImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/keluarga"/>
+            android:scaleType="center"
+            android:src="@drawable/keluarga" />
     </androidx.cardview.widget.CardView>
 
 
@@ -45,8 +45,8 @@
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
         android:layout_marginBottom="550dp"
-        android:background="@drawable/rounded_corners"
-        android:backgroundTint="#88E3FF"
+        android:background="@drawable/button_gradient"
+
         android:drawableLeft="@drawable/ic_new_quran"
         android:paddingHorizontal="32dp"
         android:paddingVertical="12dp"
@@ -63,8 +63,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
         android:layout_marginBottom="450dp"
-        android:background="@drawable/rounded_corners"
-        android:backgroundTint="#88E3FF"
+        android:background="@drawable/button_gradient"
         android:drawableLeft="@drawable/hugeicons_adzan"
         android:paddingHorizontal="32dp"
         android:paddingVertical="12dp"
@@ -81,8 +80,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
         android:layout_marginBottom="350dp"
-        android:background="@drawable/rounded_corners"
-        android:backgroundTint="#88E3FF"
+        android:background="@drawable/button_gradient"
         android:drawableLeft="@drawable/compas"
         android:paddingHorizontal="32dp"
         android:paddingVertical="12dp"
@@ -99,8 +97,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
         android:layout_marginBottom="250dp"
-        android:background="@drawable/rounded_corners"
-        android:backgroundTint="#88E3FF"
+        android:background="@drawable/button_gradient"
         android:drawableLeft="@drawable/tdesign_setting"
         android:paddingHorizontal="32dp"
         android:paddingVertical="12dp"

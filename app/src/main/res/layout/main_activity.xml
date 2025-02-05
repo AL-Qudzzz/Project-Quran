@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#D9F6FF"
+    android:background="@drawable/gradient_background"
     android:padding="16dp">
 
     <!-- Centered Content -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="90dp"
         android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:layout_marginTop="90dp">
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:text="MyQuran"
+            android:textColor="@color/black"
             android:textSize="32sp"
             android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
+            android:layout_marginBottom="1dp"
             android:text="Light for the Heart,"
             android:textSize="18sp" />
 
@@ -41,15 +41,15 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="240dp"
         app:cardCornerRadius="30dp"
-        app:cardPreventCornerOverlap="true"
-        android:layout_marginTop="240dp">
+        app:cardPreventCornerOverlap="true">
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="550dp"
-            android:src="@drawable/home"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:src="@drawable/home" />
     </androidx.cardview.widget.CardView>
 
     <!-- Get Started Button -->
@@ -57,18 +57,16 @@
         android:id="@+id/getStartedButton"
         android:layout_width="240dp"
         android:layout_height="60dp"
-        android:text="Get Started"
-        android:textAllCaps="true"
-        android:textColor="#494CA4"
-        android:textSize="20dp"
-        android:backgroundTint="#88E3FF"
-        android:paddingHorizontal="32dp"
-        android:paddingVertical="12dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="65dp"
-        android:background="@drawable/rounded_corners"/>
-
+        android:background="@drawable/button_gradient"
+        android:paddingHorizontal="32dp"
+        android:paddingVertical="12dp"
+        android:text="Get Started"
+        android:textAllCaps="true"
+        android:textColor="#FFFFFF"
+        android:textSize="20dp" />
 
 
 </RelativeLayout>

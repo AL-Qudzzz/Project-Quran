@@ -14,7 +14,7 @@
                 android:startColor="#77C4FF"
                 android:endColor="#BAE5FC"
                 android:type="linear" />
-            <corners android:radius="23dp" /> <!-- Radius sudut -->
+            <corners android:radius="25dp" /> <!-- Radius sudut -->
             <stroke android:width="3dp" android:color="@android:color/transparent" />
         </shape>
     </item>
