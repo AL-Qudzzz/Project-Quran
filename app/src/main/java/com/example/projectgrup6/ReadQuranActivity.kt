@@ -1,17 +1,18 @@
 package com.example.projectgrup6
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.projectgrup6.adapter.SurahAdapter
+import com.example.projectgrup6.model.Surah
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 import kotlin.concurrent.thread
-import com.example.projectgrup6.adapter.SurahAdapter
-import com.example.projectgrup6.model.Surah
 
 class ReadQuranActivity : AppCompatActivity() {
     private lateinit var surahRecyclerView: RecyclerView
@@ -30,7 +31,7 @@ class ReadQuranActivity : AppCompatActivity() {
     private fun fetchSurahData() {
         thread {
             try {
-                val url = URL("https://api.alquran.cloud/v1/surah") // GANTI KE HTTPS
+                val url = URL("https://api.alquran.cloud/v1/surah") // API untuk mendapatkan daftar surah
                 val connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"
                 connection.connectTimeout = 5000
@@ -58,8 +59,12 @@ class ReadQuranActivity : AppCompatActivity() {
                     }
 
                     runOnUiThread {
+                        // Set adapter dan tambahkan fungsi klik untuk berpindah ke AyatActivity
                         surahRecyclerView.adapter = SurahAdapter(surahList) { surah ->
-                            Toast.makeText(this, "Dipilih: ${surah.nama}", Toast.LENGTH_SHORT).show()
+                            val intent = Intent(this@ReadQuranActivity, AyatActivity::class.java)
+                            intent.putExtra("SURAH_NUMBER", surah.nomor)
+                            intent.putExtra("SURAH_NAME", surah.nama)
+                            startActivity(intent)
                         }
                     }
                 } else {

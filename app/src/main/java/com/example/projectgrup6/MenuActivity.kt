@@ -20,5 +20,6 @@ class MenuActivity : AppCompatActivity() {
             val intent = Intent(this, ReadQuranActivity::class.java)
             startActivity(intent)
         }
+
     }
 }

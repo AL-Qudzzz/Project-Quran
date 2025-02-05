@@ -7,5 +7,5 @@ data class Surah(
     val type: String,
     val ayat: Int,
     val audio: String,
-    val keterangan: String
+    val keterangan: String,
 )

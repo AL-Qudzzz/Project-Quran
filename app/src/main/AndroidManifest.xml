@@ -31,6 +31,9 @@
 
         <!-- ReadQuranActivity -->
         <activity android:name=".ReadQuranActivity"></activity>
+
+        <!-- AyatActivity -->
+        <activity android:name=".AyatActivity"></activity>
     </application>
 
 </manifest>
