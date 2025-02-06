@@ -1,47 +1,77 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:background="#F5F7FA"
     android:padding="8dp"
-    android:background="#EFEFEF"
     android:layout_marginBottom="8dp">
 
-    <TextView
-        android:id="@+id/ayatNumber"
-        android:layout_width="wrap_content"
+    <!-- Bagian atas dengan ikon dan nomor ayat -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="#008B8B" />
+        android:orientation="horizontal"
+        android:background="@drawable/rounded_surah"
+        android:padding="8dp"
+        android:gravity="center_vertical">
 
+
+
+        <TextView
+            android:id="@+id/ayatNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#003366"
+            android:background="@drawable/border"
+            android:gravity="center"
+            android:layout_marginStart="8dp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/btnShare"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/share"
+            android:layout_marginEnd="8dp" />
+
+        <ImageView
+            android:id="@+id/btnPlay"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/playbtn" />
+
+        <ImageView
+            android:id="@+id/btnBookmark"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/bookmarkbiru"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+
+    <!-- Ayat dalam bahasa Arab -->
     <TextView
         android:id="@+id/ayatText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:textColor="#000000" />
+        android:textSize="24sp"
+        android:textColor="#000000"
+        android:textAlignment="center"
+        android:paddingTop="8dp" />
 
-    <TextView
-        android:id="@+id/transliterationText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:textStyle="italic"
-        android:textColor="#666666" />
-
+    <!-- Terjemahan -->
     <TextView
         android:id="@+id/translationText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:textColor="#444444" />
-
-    <ImageView
-        android:id="@+id/btnPlay"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_gravity="end"
-        android:src="@drawable/playbtn"
-        android:padding="8dp" />
+        android:textColor="#444444"
+        android:textAlignment="center"
+        android:paddingTop="4dp"
+        android:paddingBottom="8dp" />
 </LinearLayout>

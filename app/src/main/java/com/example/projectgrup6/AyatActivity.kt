@@ -1,6 +1,7 @@
 package com.example.projectgrup6
 
 import android.os.Bundle
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,6 +13,7 @@ import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 import kotlin.concurrent.thread
+import android.widget.ImageView
 
 class AyatActivity : AppCompatActivity() {
 
@@ -26,14 +28,28 @@ class AyatActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerViewAyat)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
+        // Tombol kembali
+        val backButton: ImageView = findViewById(R.id.btn_back)
+        backButton.setOnClickListener {
+            // Kembali ke aktivitas sebelumnya
+            finish()
+        }
+
         // Mendapatkan nomor surah dari Intent
         val surahNumber = intent.getIntExtra("SURAH_NUMBER", 1)
+        val surahName = intent.getStringExtra("SURAH_NAME") ?: "Al-Fatihah"
+
+        // Ambil TextView berdasarkan ID
+        val judulTextView: TextView = findViewById(R.id.judul)
+        // Setel nama surah ke TextView
+        judulTextView.text = surahName
 
         // Memanggil API untuk mengambil data ayat dan surah
-        fetchAyatData(surahNumber)
+        fetchAyatData(surahNumber, surahName)
     }
 
-    private fun fetchAyatData(surahNumber: Int) {
+
+    private fun fetchAyatData(surahNumber: Int, surahName: String) {
         thread {
             try {
                 val url = URL("https://quran-api.santrikoding.com/api/surah/$surahNumber")
@@ -44,7 +60,6 @@ class AyatActivity : AppCompatActivity() {
                 val jsonObject = JSONObject(response)
 
                 // Mengambil data surah
-                // Deklarasi List<Ayat>
                 surah = Surah2(
                     nama = jsonObject.getString("nama"),
                     namaLatin = jsonObject.getString("nama_latin"),
@@ -53,9 +68,8 @@ class AyatActivity : AppCompatActivity() {
                     arti = jsonObject.getString("arti"),
                     deskripsi = jsonObject.getString("deskripsi"),
                     audio = jsonObject.getString("audio"),
-                    ayat = mutableListOf<Ayat>() // Perbaikan tipe
+                    ayat = mutableListOf()
                 )
-
 
                 val ayatArray = jsonObject.getJSONArray("ayat")
 
@@ -74,9 +88,12 @@ class AyatActivity : AppCompatActivity() {
 
                 // Update UI di thread utama
                 runOnUiThread {
-                    ayatAdapter = AyatAdapter(surah.ayat) { audioUrl ->
+                    ayatAdapter = AyatAdapter(surah.ayat) { audioUrl, ayatNumber ->
                         // Logic untuk memutar audio ketika tombol play di klik
                         Toast.makeText(this, "Memutar audio: $audioUrl", Toast.LENGTH_SHORT).show()
+
+                        // Update Last Read setiap ayat diputar
+                        updateLastRead(surahNumber, surah.namaLatin, ayatNumber)
                     }
                     recyclerView.adapter = ayatAdapter
                 }
@@ -84,5 +101,17 @@ class AyatActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
         }
+    }
+
+    // Simpan surah dan ayat terakhir yang dibaca
+    private fun updateLastRead(surahNumber: Int, surahName: String, ayahNumber: Int) {
+        val sharedPreferences = getSharedPreferences("MyQuranPreferences", MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putInt("LAST_SURAH_NUMBER", surahNumber)
+        editor.putString("LAST_SURAH_NAME", surahName)
+        editor.putInt("LAST_SURAH_AYAH", ayahNumber)
+        editor.apply()
+
+        Toast.makeText(this, "Last Read updated: $surahName Ayat $ayahNumber", Toast.LENGTH_SHORT).show()
     }
 }

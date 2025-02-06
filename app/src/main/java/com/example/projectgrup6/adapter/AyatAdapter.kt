@@ -12,14 +12,14 @@ import android.text.Html
 
 
 class AyatAdapter(
-    private val ayatList: List<Ayat>, // Daftar ayat yang akan ditampilkan
-    private val onPlayClick: (String) -> Unit // Fungsi untuk memainkan audio surah
+    private val ayatList: List<Ayat>,
+    private val onPlayClick: (String, Int) -> Unit // Callback mengirim URL dan nomor ayat
 ) : RecyclerView.Adapter<AyatAdapter.AyatViewHolder>() {
 
     inner class AyatViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val ayatNumber: TextView = view.findViewById(R.id.ayatNumber)
         val ayatText: TextView = view.findViewById(R.id.ayatText)
-        val transliterationText: TextView = view.findViewById(R.id.transliterationText)
+        val transliterationText: TextView = view.findViewById(R.id.translationText)
         val translationText: TextView = view.findViewById(R.id.translationText)
         val btnPlay: ImageView = view.findViewById(R.id.btnPlay)
     }
@@ -32,19 +32,17 @@ class AyatAdapter(
 
     override fun onBindViewHolder(holder: AyatViewHolder, position: Int) {
         val ayat = ayatList[position]
-        // Nomor ayat
         holder.ayatNumber.text = ayat.nomor.toString()
-
-        // Teks Arab
         holder.ayatText.text = ayat.ar
-
-        // Teks Latin dengan parsing HTML
         holder.transliterationText.text = Html.fromHtml(ayat.tr, Html.FROM_HTML_MODE_LEGACY)
-
-        // Terjemahan
         holder.translationText.text = ayat.idn
 
+        holder.btnPlay.setOnClickListener {
+            // Kirim data URL audio dan nomor ayat ke Activity
+            onPlayClick(ayat.ar, ayat.nomor)
+        }
     }
 
     override fun getItemCount() = ayatList.size
 }
+

@@ -6,12 +6,12 @@
     <item android:id="@+id/nav_adhan"
         android:icon="@drawable/adhan"
         android:title="Adhan"/>
-    <item android:id="@+id/nav_surah"
+    <item android:id="@+id/nav_ayat"
         android:icon="@drawable/prayer"
-        android:title="Surah"/>
-    <item android:id="@+id/nav_shalat"
+        android:title="Ayat"/>
+    <item android:id="@+id/nav_qiblat"
         android:icon="@drawable/shalat"
-        android:title="Shalat"/>
+        android:title="Qiblat"/>
     <item android:id="@+id/nav_bookmark"
         android:icon="@drawable/bookmark"
         android:title="Bookmark"/>

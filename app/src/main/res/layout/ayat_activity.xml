@@ -16,12 +16,45 @@
         app:cardElevation="4dp">
 
         <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="16dp"
             android:background="#ffffff">
-            <!-- Content inside the RelativeLayout (if any) -->
+
+            <!-- Tombol Kembali -->
+            <ImageView
+                android:id="@+id/btn_back"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/back"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"/>
+
+            <!-- Judul -->
+            <TextView
+                android:id="@+id/judul"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="#000000"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"/>
+
+            <!-- Menu (Titik Tiga) -->
+            <ImageView
+                android:id="@+id/menu"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/menu"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"/>
+
+            <!-- Daftar Surah -->
+
         </RelativeLayout>
+
     </androidx.cardview.widget.CardView>
 
     <!-- RecyclerView for displaying items -->

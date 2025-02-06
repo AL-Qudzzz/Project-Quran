@@ -40,6 +40,9 @@
         android:layout_marginTop="16dp"
         app:cardCornerRadius="16dp"
         app:cardElevation="4dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
         app:layout_constraintTop_toBottomOf="@id/txtTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -56,7 +59,7 @@
                 android:layout_height="32dp"
                 android:src="@drawable/lr"
                 android:contentDescription="Book"
-                android:layout_alignParentStart="true"/>
+                android:layout_alignParentStart="true" />
 
             <TextView
                 android:id="@+id/lastReadLabel"
@@ -66,7 +69,7 @@
                 android:textSize="14sp"
                 android:textColor="#666666"
                 android:layout_toEndOf="@id/bookIcon"
-                android:layout_marginStart="8dp"/>
+                android:layout_marginStart="8dp" />
 
             <TextView
                 android:id="@+id/lastReadSurah"
@@ -74,12 +77,13 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/lastReadLabel"
                 android:layout_marginStart="-26dp"
-                android:layout_marginTop="56dp"
+                android:layout_marginTop="8dp"
                 android:layout_toEndOf="@id/bookIcon"
-                android:text="Al-Fatihah: 1"
                 android:textColor="#000000"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:text="No One"/>
+
 
             <ImageView
                 android:id="@+id/quranImage"
