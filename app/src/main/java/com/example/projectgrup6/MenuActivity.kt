@@ -9,17 +9,24 @@ class MenuActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.menu_activity)  // Replace with the actual layout for MenuActivity
+        setContentView(R.layout.menu_activity)  // Pastikan layout yang benar digunakan
 
         // Find the ReadButton
         val readButton: Button = findViewById(R.id.ReadButton)
+        val adhanButton: Button = findViewById(R.id.AdhanButton) // Tambahkan ini
 
         // Set OnClickListener for the ReadButton
         readButton.setOnClickListener {
-            // Create an Intent to navigate to ReadQuranActivity
+            // Navigasi ke ReadQuranActivity
             val intent = Intent(this, ReadQuranActivity::class.java)
             startActivity(intent)
         }
 
+        // Set OnClickListener for the AdhanButton
+        adhanButton.setOnClickListener {
+            // Navigasi ke AdhanActivity
+            val intent = Intent(this, AdhanActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

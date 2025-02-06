@@ -19,7 +19,7 @@ class AyatAdapter(
     inner class AyatViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val ayatNumber: TextView = view.findViewById(R.id.ayatNumber)
         val ayatText: TextView = view.findViewById(R.id.ayatText)
-        val transliterationText: TextView = view.findViewById(R.id.translationText)
+        val transliterationText: TextView = view.findViewById(R.id.transliterationText)
         val translationText: TextView = view.findViewById(R.id.translationText)
         val btnPlay: ImageView = view.findViewById(R.id.btnPlay)
     }

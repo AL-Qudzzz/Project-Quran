@@ -34,6 +34,13 @@
 
         <!-- AyatActivity -->
         <activity android:name=".AyatActivity"></activity>
+
+        <!-- AdhanActivity -->
+        <activity android:name=".AdhanActivity"></activity>
+
+        <!-- SelectLocationActivity -->
+        <activity android:name=".SelectLocationActivity"></activity>
+
     </application>
 
 </manifest>
