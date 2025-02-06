@@ -11,7 +11,7 @@
         android:id="@+id/lastReadCard"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="35dp"
         app:cardCornerRadius="16dp"
         app:cardElevation="4dp">
 
@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="16dp"
-            android:background="@drawable/gradient_background">
+            android:background="#ffffff">
             <!-- Content inside the RelativeLayout (if any) -->
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
@@ -31,9 +31,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewAyat"
         android:layout_width="match_parent"
-        android:layout_height="520dp"
-        android:paddingTop="8dp"
-        android:layout_marginTop="130dp"/>
+        android:layout_height="match_parent"
+        android:layout_marginTop="170dp"
+        android:paddingTop="8dp" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"

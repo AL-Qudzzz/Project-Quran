@@ -8,6 +8,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projectgrup6.R
 import com.example.projectgrup6.model.Ayat
+import android.text.Html
+
 
 class AyatAdapter(
     private val ayatList: List<Ayat>, // Daftar ayat yang akan ditampilkan
@@ -30,13 +32,18 @@ class AyatAdapter(
 
     override fun onBindViewHolder(holder: AyatViewHolder, position: Int) {
         val ayat = ayatList[position]
+        // Nomor ayat
         holder.ayatNumber.text = ayat.nomor.toString()
+
+        // Teks Arab
         holder.ayatText.text = ayat.ar
-        holder.transliterationText.text = ayat.tr
+
+        // Teks Latin dengan parsing HTML
+        holder.transliterationText.text = Html.fromHtml(ayat.tr, Html.FROM_HTML_MODE_LEGACY)
+
+        // Terjemahan
         holder.translationText.text = ayat.idn
 
-        // Tombol play akan memutar audio surah berdasarkan URL audio yang diberikan
-        holder.btnPlay.setOnClickListener { onPlayClick(ayat.ar) }
     }
 
     override fun getItemCount() = ayatList.size

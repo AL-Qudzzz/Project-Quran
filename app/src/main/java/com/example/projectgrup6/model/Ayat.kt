@@ -6,5 +6,5 @@ data class Ayat(
     val nomor: Int,
     val ar: String, // Ayat dalam bahasa Arab
     val tr: String, // Transliterasi
-    val idn: String // Terjemahan dalam Bahasa Indonesia
+    val idn: String, // Terjemahan dalam Bahasa Indonesia
 )
