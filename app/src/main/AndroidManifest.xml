@@ -45,10 +45,11 @@
             </intent-filter>
         </activity>
 
+        <!-- QiblaActivity -->
+        <activity android:name=".QiblaActivity"></activity>
 
-
-        <!-- SelectLocationActivity -->
-        <activity android:name=".SelectLocationActivity"></activity>
+        <!-- SettingsActivity -->
+        <activity android:name=".SettingsActivity"></activity>
 
     </application>
 

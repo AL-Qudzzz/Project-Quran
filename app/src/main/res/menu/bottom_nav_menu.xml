@@ -12,7 +12,4 @@
     <item android:id="@+id/nav_qiblat"
         android:icon="@drawable/shalat"
         android:title="Qiblat"/>
-    <item android:id="@+id/nav_bookmark"
-        android:icon="@drawable/bookmark"
-        android:title="Bookmark"/>
 </menu>
