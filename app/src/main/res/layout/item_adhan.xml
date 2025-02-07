@@ -1,25 +1,38 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="8dp"
+    android:padding="28dp"
     android:background="@drawable/button_gradient"
+    android:layout_marginBottom="35dp"
     android:gravity="center_vertical">
 
+    <!-- Ikon -->
+    <ImageView
+        android:id="@+id/prayerIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/adhan"
+        android:layout_marginEnd="12dp" />
+
+    <!-- Nama Sholat -->
     <TextView
         android:id="@+id/prayerName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
         android:layout_weight="1"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="#000000"/>
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
+    <!-- Waktu Sholat -->
     <TextView
         android:id="@+id/prayerTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:textColor="#000000"/>
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:gravity="end" />
 </LinearLayout>
