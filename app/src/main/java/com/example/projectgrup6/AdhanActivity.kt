@@ -1,10 +1,7 @@
 package com.example.projectgrup6
 
-import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -13,8 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.projectgrup6.adapter.AdhanAdapter
 import com.example.projectgrup6.model.Adhan
-import com.example.projectgrup6.model.City
-import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
@@ -26,7 +21,6 @@ class AdhanActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var locationText: TextView
-    private var selectedCityId: String? = null
     private val adhanList = mutableListOf<Adhan>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,53 +38,13 @@ class AdhanActivity : AppCompatActivity() {
 
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        val pinLocationButton: ImageButton = findViewById(R.id.pinlocation)
-        pinLocationButton.setOnClickListener {
-            fetchCities() // Pastikan ini metode Anda untuk menampilkan dialog lokasi
-        }
+        // Set lokasi tetap
+        val cityId = "1108"
+        val cityName = "KOTA TANGERANG SELATAN"
+        locationText.text = cityName
 
-
-    }
-
-    private fun fetchCities() {
-        thread {
-            try {
-                val url = URL("https://api.myquran.com/v2/sholat/kota/semua")
-                val connection = url.openConnection() as HttpURLConnection
-                connection.requestMethod = "GET"
-
-                val response = connection.inputStream.bufferedReader().use { it.readText() }
-                val jsonArray = JSONArray(response)
-
-                val cities = mutableListOf<City>()
-                for (i in 0 until jsonArray.length()) {
-                    val obj = jsonArray.getJSONObject(i)
-                    cities.add(City(obj.getString("id"), obj.getString("lokasi")))
-                }
-
-                runOnUiThread {
-                    showCityDialog(cities)
-                }
-            } catch (e: Exception) {
-                Log.e("API_ERROR", "Error fetching cities: ${e.message}")
-                runOnUiThread {
-                    Toast.makeText(this, "Gagal mengambil daftar kota", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
-
-    private fun showCityDialog(cities: List<City>) {
-        val cityNames = cities.map { it.name }.toTypedArray()
-        AlertDialog.Builder(this)
-            .setTitle("Pilih Kota")
-            .setItems(cityNames) { _, which ->
-                val selectedCity = cities[which]
-                locationText.text = selectedCity.name
-                selectedCityId = selectedCity.id
-                fetchAdhanSchedule(selectedCity.id)
-            }
-            .show()
+        // Ambil jadwal adhan untuk lokasi tetap
+        fetchAdhanSchedule(cityId)
     }
 
     private fun fetchAdhanSchedule(cityId: String) {

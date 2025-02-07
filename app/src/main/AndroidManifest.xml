@@ -36,7 +36,16 @@
         <activity android:name=".AyatActivity"></activity>
 
         <!-- AdhanActivity -->
-        <activity android:name=".AdhanActivity"></activity>
+        <activity
+            android:name=".AdhanActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+
 
         <!-- SelectLocationActivity -->
         <activity android:name=".SelectLocationActivity"></activity>
