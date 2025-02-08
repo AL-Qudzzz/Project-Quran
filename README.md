@@ -35,7 +35,7 @@ app/
 ## ⚙️ Teknologi yang Digunakan
 - **Kotlin** - Bahasa utama untuk pengembangan aplikasi Android.
 - **RecyclerView** - Menampilkan daftar surat dan ayat.
-- **API (npoint.io)** - Sumber data untuk daftar surah dan ayat.
+- **API** - Sumber data untuk daftar surah dan ayat.
 
 ## 🚀 Cara Menjalankan Proyek
 1. Clone repository ini ke Android Studio:
@@ -51,4 +51,9 @@ Aplikasi ini dibuat untuk tujuan edukasi dan non-komersial.
 
 ---
 Dibuat oleh **Tim Project Grup 6** 🎯
+- Muhammad Faiqul Umam D
+- Muhammad Thoriq Nabasa
+- Muhammad Aulia Addinul Haq
+- Kanaya Ratu Vanisa
+- Saskia Putri Intania Sumarsono
 
