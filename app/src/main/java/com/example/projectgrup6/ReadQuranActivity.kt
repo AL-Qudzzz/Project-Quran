@@ -2,6 +2,9 @@ package com.example.projectgrup6
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -13,25 +16,47 @@ import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 import kotlin.concurrent.thread
-import android.util.Log
 
 class ReadQuranActivity : AppCompatActivity() {
 
     private lateinit var surahRecyclerView: RecyclerView
+    private lateinit var searchInput: EditText
     private val surahList = mutableListOf<Surah>()
+    private lateinit var surahAdapter: SurahAdapter
+    private val filteredList = mutableListOf<Surah>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.read_quran_activity)
 
         surahRecyclerView = findViewById(R.id.surahRecyclerView)
+        searchInput = findViewById(R.id.searchInput) // EditText untuk pencarian
+
         surahRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        // Inisialisasi adapter
+        surahAdapter = SurahAdapter(filteredList) { surah ->
+            val intent = Intent(this@ReadQuranActivity, AyatActivity::class.java)
+            intent.putExtra("SURAH_NUMBER", surah.nomor)
+            intent.putExtra("SURAH_NAME", surah.nama)
+            startActivity(intent)
+        }
+        surahRecyclerView.adapter = surahAdapter
 
         // Update informasi Last Read di UI
         updateLastReadUI()
 
         // Tangani klik pada card Last Read
         handleLastReadClick()
+
+        // Tambahkan event listener untuk pencarian
+        searchInput.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                filterList(s.toString())
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
 
         // Ambil data Surah
         fetchSurahData()
@@ -44,7 +69,6 @@ class ReadQuranActivity : AppCompatActivity() {
 
         val lastReadSurahTextView = findViewById<TextView>(R.id.lastReadSurah)
 
-        // Tampilkan data Last Read jika valid
         if (lastSurahName != null && lastSurahAyah != -1) {
             lastReadSurahTextView.text = "$lastSurahName: Ayat $lastSurahAyah"
         } else {
@@ -70,7 +94,6 @@ class ReadQuranActivity : AppCompatActivity() {
             }
         }
     }
-
 
     private fun fetchSurahData() {
         thread {
@@ -102,12 +125,8 @@ class ReadQuranActivity : AppCompatActivity() {
                     }
 
                     runOnUiThread {
-                        surahRecyclerView.adapter = SurahAdapter(surahList) { surah ->
-                            val intent = Intent(this@ReadQuranActivity, AyatActivity::class.java)
-                            intent.putExtra("SURAH_NUMBER", surah.nomor)
-                            intent.putExtra("SURAH_NAME", surah.nama)
-                            startActivity(intent)
-                        }
+                        filteredList.addAll(surahList)
+                        surahAdapter.notifyDataSetChanged()
                     }
                 } else {
                     runOnUiThread {
@@ -121,5 +140,16 @@ class ReadQuranActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun filterList(query: String) {
+        filteredList.clear()
+        if (query.isEmpty()) {
+            filteredList.addAll(surahList)
+        } else {
+            val lowerCaseQuery = query.lowercase()
+            filteredList.addAll(surahList.filter { it.nama.lowercase().contains(lowerCaseQuery) })
+        }
+        surahAdapter.notifyDataSetChanged()
     }
 }
