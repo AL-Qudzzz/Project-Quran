@@ -72,29 +72,20 @@
             android:textAlignment="textEnd" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:background="#D1E7FF"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:src="@drawable/location"
-            android:contentDescription="Location icon" />
-
-        <TextView
-            android:id="@+id/location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ciputat, Tangerang Selatan - Indonesia"
-            android:textSize="14sp"
-            android:layout_marginStart="4dp" />
-    </LinearLayout>
-
     <!-- RecyclerView untuk Jadwal Adzan -->
+    <TextView
+        android:id="@+id/location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="Pilih lokasi"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dateHijri" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/adhanRecyclerView"
         android:layout_width="match_parent"

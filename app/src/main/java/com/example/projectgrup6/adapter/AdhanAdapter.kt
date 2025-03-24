@@ -1,32 +1,49 @@
-package com.example.projectgrup6.adapter
+package com.example.projectgrup6
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.projectgrup6.R
-import com.example.projectgrup6.model.Adhan
+import com.example.projectgrup6.databinding.ItemAdhanBinding
 
-class AdhanAdapter(private val adhanList: List<Adhan>) :
-    RecyclerView.Adapter<AdhanAdapter.AdhanViewHolder>() {
+class AdhanAdapter : RecyclerView.Adapter<AdhanAdapter.ViewHolder>() {
 
-    inner class AdhanViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val prayerName: TextView = view.findViewById(R.id.prayerName)
-        val prayerTime: TextView = view.findViewById(R.id.prayerTime)
+    private var prayerTimes = listOf<PrayerTime>()
+
+    class ViewHolder(private val binding: ItemAdhanBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(prayerTime: PrayerTime) {
+            binding.prayerName.text = prayerTime.name
+
+            val hours = prayerTime.time.toInt()
+            val minutes = ((prayerTime.time - hours) * 60).toInt()
+            binding.prayerTime.text = String.format("%02d:%02d", hours, minutes)
+
+            val iconResId = when (prayerTime.name) {
+                "Fajr" -> R.drawable.adhan
+                "Dhuhr" -> R.drawable.adhan
+                "Asr" -> R.drawable.adhan
+                "Maghrib" -> R.drawable.adhan
+                "Isha" -> R.drawable.adhan
+                else -> R.drawable.adhan
+            }
+            binding.prayerIcon.setImageResource(iconResId)
+
+            binding.root.contentDescription = "${prayerTime.name} at ${String.format("%02d:%02d", hours, minutes)}"
+        }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdhanViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_adhan, parent, false)
-        return AdhanViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding = ItemAdhanBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: AdhanViewHolder, position: Int) {
-        val adhan = adhanList[position]
-        holder.prayerName.text = adhan.name
-        holder.prayerTime.text = adhan.time
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(prayerTimes[position])
     }
 
-    override fun getItemCount() = adhanList.size
+    override fun getItemCount(): Int = prayerTimes.size
+
+    fun updateTimes(times: List<PrayerTime>) {
+        prayerTimes = times
+        notifyDataSetChanged()
+    }
 }

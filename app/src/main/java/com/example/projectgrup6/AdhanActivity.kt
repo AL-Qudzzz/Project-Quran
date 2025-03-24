@@ -1,45 +1,46 @@
 package com.example.projectgrup6
 
-import android.Manifest
-import android.content.pm.PackageManager
-import android.location.Address
-import android.location.Geocoder
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.LayoutInflater
+import android.widget.ArrayAdapter
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.projectgrup6.databinding.AdhanActivityBinding
-import com.google.android.gms.location.*
+import com.example.projectgrup6.databinding.DialogCitySelectionBinding
+import okhttp3.*
+import org.json.JSONObject
+import java.io.File
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.Executor
-import java.util.concurrent.Executors
-import kotlin.math.*
 
 class AdhanActivity : AppCompatActivity() {
 
     private lateinit var binding: AdhanActivityBinding
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var adhanAdapter: AdhanAdapter
     private val handler = Handler(Looper.getMainLooper())
-    private lateinit var locationCallback: LocationCallback
+    private val client = OkHttpClient()
+    private var cityId: String? = null
+    private var cityList: List<City> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = AdhanActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         setupRecyclerView()
         setupTimeUpdater()
-        setupLocation()
+        loadCityList()
 
         binding.btnBack.setOnClickListener {
             finish()
+        }
+
+        binding.location.setOnClickListener {
+            showCitySelectionDialog()
         }
     }
 
@@ -55,20 +56,18 @@ class AdhanActivity : AppCompatActivity() {
         val runnable = object : Runnable {
             override fun run() {
                 updateDateTime()
-                handler.postDelayed(this, 60000) // Update every minute
+                handler.postDelayed(this, 60000)
             }
         }
         handler.post(runnable)
     }
 
     private fun updateDateTime() {
-        // Gregorian Date
         val gregorianFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
         binding.dateGregorian.text = gregorianFormat.format(Date())
 
-        // Hijri Date (Simplified conversion)
         val hijriCalendar = Calendar.getInstance()
-        val hijriOffset = 1389 // Approximate offset from Gregorian
+        val hijriOffset = 1389
         hijriCalendar.add(Calendar.YEAR, -hijriOffset)
 
         val hijriMonths = arrayOf(
@@ -83,192 +82,161 @@ class AdhanActivity : AppCompatActivity() {
         binding.dateHijri.text = "$day ${hijriMonths[month]} ${year}H"
     }
 
-    private fun setupLocation() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                1
-            )
+    private fun loadCityList() {
+        // Check if the JSON file exists in internal storage
+        val file = File(filesDir, "cities.json")
+        if (file.exists()) {
+            // Read the JSON file from internal storage
+            val jsonString = file.readText()
+            parseCityList(jsonString)
+        } else {
+            // Fetch from API and save to file
+            fetchCityList()
+        }
+    }
+
+    private fun fetchCityList() {
+        val request = Request.Builder()
+            .url("https://api.myquran.com/v2/sholat/kota/semua")
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                runOnUiThread {
+                    binding.location.text = "Gagal mengambil daftar kota: ${e.message}"
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val responseData = response.body?.string()
+                if (responseData != null) {
+                    // Save the JSON response to a file in internal storage
+                    val file = File(filesDir, "cities.json")
+                    file.writeText(responseData)
+
+                    // Parse the JSON data
+                    parseCityList(responseData)
+                }
+            }
+        })
+    }
+
+    private fun parseCityList(jsonString: String) {
+        val jsonObject = JSONObject(jsonString)
+        if (jsonObject.getBoolean("status")) {
+            val cityArray = jsonObject.getJSONArray("data")
+            val cities = mutableListOf<City>()
+            for (i in 0 until cityArray.length()) {
+                val cityJson = cityArray.getJSONObject(i)
+                cities.add(
+                    City(
+                        id = cityJson.getString("id"),
+                        name = cityJson.getString("lokasi")
+                    )
+                )
+            }
+            cityList = cities
+            runOnUiThread {
+                binding.location.text = "Pilih lokasi"
+            }
+        } else {
+            runOnUiThread {
+                binding.location.text = "Gagal mengambil daftar kota"
+            }
+        }
+    }
+
+    private fun showCitySelectionDialog() {
+        if (cityList.isEmpty()) {
+            binding.location.text = "Daftar kota belum tersedia"
             return
         }
 
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult) {
-                locationResult.lastLocation?.let { location ->
-                    val geocoder = Geocoder(this@AdhanActivity, Locale.getDefault())
-                    try {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            // API 33 and above: Use the new Geocoder API with callback
-                            val executor: Executor = Executors.newSingleThreadExecutor()
-                            geocoder.getFromLocation(
-                                location.latitude,
-                                location.longitude,
-                                1,
-                                object : Geocoder.GeocodeListener {
-                                    override fun onGeocode(addresses: MutableList<Address>) {
-                                        if (addresses.isNotEmpty()) {
-                                            val address = addresses[0]
-                                            runOnUiThread {
-                                                binding.location.text = "${address.locality}, ${address.subAdminArea} - ${address.countryName}"
-                                                updatePrayerTimes(location.latitude, location.longitude)
-                                            }
-                                        } else {
-                                            runOnUiThread {
-                                                binding.location.text = "Location unavailable"
-                                            }
-                                        }
-                                    }
+        val dialogBinding = DialogCitySelectionBinding.inflate(LayoutInflater.from(this))
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("Pilih Kota")
+            .setView(dialogBinding.root)
+            .setNegativeButton("Batal") { dialog, _ -> dialog.dismiss() }
+            .create()
 
-                                    override fun onError(errorMessage: String?) {
-                                        runOnUiThread {
-                                            binding.location.text = "Location unavailable: ${errorMessage ?: "Unknown error"}"
-                                        }
-                                    }
-                                }
-                            )
-                        } else {
-                            // API 32 and below: Use the deprecated Geocoder API
-                            @Suppress("DEPRECATION")
-                            val addresses = geocoder.getFromLocation(
-                                location.latitude,
-                                location.longitude,
-                                1
-                            )
-                            if (!addresses.isNullOrEmpty()) {
-                                val address = addresses[0]
-                                binding.location.text = "${address.locality}, ${address.subAdminArea} - ${address.countryName}"
-                                updatePrayerTimes(location.latitude, location.longitude)
-                            } else {
-                                binding.location.text = "Location unavailable"
-                            }
+        // Populate the Spinner with city names
+        val cityNames = cityList.map { it.name }
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, cityNames)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        dialogBinding.citySpinner.adapter = adapter
+
+        // Set a listener for the "Pilih" button
+        dialogBinding.btnSelectCity.setOnClickListener {
+            val selectedPosition = dialogBinding.citySpinner.selectedItemPosition
+            val selectedCity = cityList[selectedPosition]
+            cityId = selectedCity.id
+            binding.location.text = selectedCity.name
+            fetchPrayerTimes(cityId!!)
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun fetchPrayerTimes(cityId: String) {
+        val currentDate = Calendar.getInstance()
+        val year = currentDate.get(Calendar.YEAR)
+        val month = currentDate.get(Calendar.MONTH) + 1
+        val day = currentDate.get(Calendar.DAY_OF_MONTH)
+
+        val url = "https://api.myquran.com/v2/sholat/jadwal/$cityId/$year/$month/$day"
+        val request = Request.Builder()
+            .url(url)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                runOnUiThread {
+                    binding.location.text = "Gagal mengambil jadwal sholat: ${e.message}"
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val responseData = response.body?.string()
+                if (responseData != null) {
+                    val jsonObject = JSONObject(responseData)
+                    if (jsonObject.getBoolean("status")) {
+                        val data = jsonObject.getJSONObject("data")
+                        val jadwal = data.getJSONObject("jadwal")
+                        val prayerTimes = mutableListOf<PrayerTime>()
+
+                        prayerTimes.add(PrayerTime("Fajr", convertTimeToDecimal(jadwal.getString("subuh"))))
+                        prayerTimes.add(PrayerTime("Dhuhr", convertTimeToDecimal(jadwal.getString("dzuhur"))))
+                        prayerTimes.add(PrayerTime("Asr", convertTimeToDecimal(jadwal.getString("ashar"))))
+                        prayerTimes.add(PrayerTime("Maghrib", convertTimeToDecimal(jadwal.getString("maghrib"))))
+                        prayerTimes.add(PrayerTime("Isha", convertTimeToDecimal(jadwal.getString("isya"))))
+
+                        runOnUiThread {
+                            adhanAdapter.updateTimes(prayerTimes)
+                            binding.adhanRecyclerView.contentDescription = "Adhan schedule list with ${prayerTimes.size} prayer times"
                         }
-                    } catch (e: Exception) {
-                        binding.location.text = "Location unavailable: ${e.message}"
+                    } else {
+                        runOnUiThread {
+                            binding.location.text = "Gagal mengambil jadwal sholat"
+                        }
                     }
                 }
             }
-        }
-
-        val locationRequest = LocationRequest.create().apply {
-            interval = 60000
-            fastestInterval = 5000
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        }
-
-        fusedLocationClient.requestLocationUpdates(
-            locationRequest,
-            locationCallback,
-            Looper.getMainLooper()
-        )
+        })
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 1) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                setupLocation()
-            } else {
-                binding.location.text = "Location permission denied"
-            }
-        }
-    }
-
-    private fun updatePrayerTimes(latitude: Double, longitude: Double) {
-        val prayerTimes = calculatePrayerTimes(latitude, longitude)
-        adhanAdapter.updateTimes(prayerTimes)
-        binding.adhanRecyclerView.contentDescription = "Adhan schedule list with ${prayerTimes.size} prayer times"
-    }
-
-    private fun calculatePrayerTimes(latitude: Double, longitude: Double): List<PrayerTime> {
-        val calendar = Calendar.getInstance()
-        val timezone = TimeZone.getDefault().rawOffset / 3600000.0
-
-        // Simplified prayer time calculation
-        val dayOfYear = calendar.get(Calendar.DAY_OF_YEAR)
-        val eqt = 12.0 + timezone - longitude / 15.0
-
-        return listOf(
-            PrayerTime("Fajr", calculateFajr(latitude, dayOfYear)),
-            PrayerTime("Dhuhr", eqt),
-            PrayerTime("Asr", calculateAsr(latitude, dayOfYear, eqt)),
-            PrayerTime("Maghrib", calculateMaghrib(latitude, dayOfYear)),
-            PrayerTime("Isha", calculateIsha(latitude, dayOfYear))
-        )
-    }
-
-    private fun calculateFajr(latitude: Double, dayOfYear: Int): Double {
-        val declination = 23.45 * sin(Math.toRadians(360.0 * (284 + dayOfYear) / 365))
-        return 12.0 - acos(-sin(Math.toRadians(15.0)) /
-                (cos(Math.toRadians(latitude)) * cos(Math.toRadians(declination)))) / 15.0
-    }
-
-    private fun calculateAsr(latitude: Double, dayOfYear: Int, dhuhr: Double): Double {
-        val declination = 23.45 * sin(Math.toRadians(360.0 * (284 + dayOfYear) / 365))
-        val shadowFactor = 1.0 // Standard Shafi'i method
-        return dhuhr + acos(sin(atan(1.0 / shadowFactor)) /
-                (cos(Math.toRadians(latitude)) * cos(Math.toRadians(declination)))) / 15.0
-    }
-
-    private fun calculateMaghrib(latitude: Double, dayOfYear: Int): Double {
-        val declination = 23.45 * sin(Math.toRadians(360.0 * (284 + dayOfYear) / 365))
-        return 12.0 + acos(-sin(Math.toRadians(0.833)) /
-                (cos(Math.toRadians(latitude)) * cos(Math.toRadians(declination)))) / 15.0
-    }
-
-    private fun calculateIsha(latitude: Double, dayOfYear: Int): Double {
-        val declination = 23.45 * sin(Math.toRadians(360.0 * (284 + dayOfYear) / 365))
-        return 12.0 + acos(-sin(Math.toRadians(17.0)) /
-                (cos(Math.toRadians(latitude)) * cos(Math.toRadians(declination)))) / 15.0
+    private fun convertTimeToDecimal(time: String): Double {
+        val parts = time.split(":")
+        val hours = parts[0].toInt()
+        val minutes = parts[1].toInt()
+        return hours + minutes / 60.0
     }
 
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacksAndMessages(null)
-        fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 }
 
+data class City(val id: String, val name: String)
 data class PrayerTime(val name: String, val time: Double)
-
-class AdhanAdapter : RecyclerView.Adapter<AdhanAdapter.ViewHolder>() {
-    private var prayerTimes = listOf<PrayerTime>()
-
-    class ViewHolder(itemView: android.view.View) : RecyclerView.ViewHolder(itemView) {
-        val name: android.widget.TextView = itemView.findViewById(android.R.id.text1)
-        val time: android.widget.TextView = itemView.findViewById(android.R.id.text2)
-    }
-
-    override fun onCreateViewHolder(parent: android.view.ViewGroup, viewType: Int): ViewHolder {
-        val view = android.view.LayoutInflater.from(parent.context)
-            .inflate(android.R.layout.simple_list_item_2, parent, false)
-        return ViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val prayer = prayerTimes[position]
-        holder.name.text = prayer.name
-
-        val hours = prayer.time.toInt()
-        val minutes = ((prayer.time - hours) * 60).toInt()
-        holder.time.text = String.format("%02d:%02d", hours, minutes)
-
-        // Improve accessibility
-        holder.itemView.contentDescription = "${prayer.name} at ${String.format("%02d:%02d", hours, minutes)}"
-    }
-
-    override fun getItemCount(): Int = prayerTimes.size
-
-    fun updateTimes(times: List<PrayerTime>) {
-        prayerTimes = times
-        notifyDataSetChanged()
-    }
-}
