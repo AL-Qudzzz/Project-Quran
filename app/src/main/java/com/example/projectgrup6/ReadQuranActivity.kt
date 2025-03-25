@@ -72,7 +72,7 @@ class ReadQuranActivity : AppCompatActivity() {
         if (lastSurahName != null && lastSurahAyah != -1) {
             lastReadSurahTextView.text = "$lastSurahName: Ayat $lastSurahAyah"
         } else {
-            lastReadSurahTextView.text = "Belum ada data terakhir dibaca"
+            lastReadSurahTextView.text = "---"
         }
     }
 
