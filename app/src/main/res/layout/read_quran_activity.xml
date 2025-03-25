@@ -129,25 +129,7 @@
             android:gravity="center"
             android:textColor="#000000"/>
 
-        <TextView
-            android:id="@+id/tabJuz"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Juz"
-            android:textSize="16sp"
-            android:gravity="center"
-            android:textColor="#666666"/>
 
-        <TextView
-            android:id="@+id/tabPage"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Page"
-            android:textSize="16sp"
-            android:gravity="center"
-            android:textColor="#666666"/>
     </LinearLayout>
 
     <!-- Surah List -->
