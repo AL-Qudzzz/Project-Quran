@@ -14,16 +14,22 @@ import java.net.HttpURLConnection
 import java.net.URL
 import kotlin.concurrent.thread
 import android.widget.ImageView
+import android.content.SharedPreferences
+import android.text.Html
 
 class AyatActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var ayatAdapter: AyatAdapter
     private lateinit var surah: Surah2
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.ayat_activity)
+
+        // Initialize SharedPreferences
+        sharedPreferences = getSharedPreferences("QuranSettings", MODE_PRIVATE)
 
         recyclerView = findViewById(R.id.recyclerViewAyat)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -47,7 +53,6 @@ class AyatActivity : AppCompatActivity() {
         // Memanggil API untuk mengambil data ayat dan surah
         fetchAyatData(surahNumber, surahName)
     }
-
 
     private fun fetchAyatData(surahNumber: Int, surahName: String) {
         thread {
@@ -88,13 +93,13 @@ class AyatActivity : AppCompatActivity() {
 
                 // Update UI di thread utama
                 runOnUiThread {
-                    ayatAdapter = AyatAdapter(surah.ayat) { audioUrl, ayatNumber ->
+                    ayatAdapter = AyatAdapter(surah.ayat, { audioUrl, ayatNumber ->
                         // Logic untuk memutar audio ketika tombol play di klik
                         Toast.makeText(this, "Memutar audio: $audioUrl", Toast.LENGTH_SHORT).show()
 
                         // Update Last Read setiap ayat diputar
                         updateLastRead(surahNumber, surah.namaLatin, ayatNumber)
-                    }
+                    }, sharedPreferences)
                     recyclerView.adapter = ayatAdapter
                 }
             } catch (e: Exception) {
