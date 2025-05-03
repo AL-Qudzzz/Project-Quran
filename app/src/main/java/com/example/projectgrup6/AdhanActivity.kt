@@ -16,6 +16,12 @@ import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
+import androidx.core.app.ActivityCompat
+import android.content.pm.PackageManager
+import android.Manifest
 
 class AdhanActivity : AppCompatActivity() {
 
@@ -25,6 +31,8 @@ class AdhanActivity : AppCompatActivity() {
     private val client = OkHttpClient()
     private var cityId: String? = null
     private var cityList: List<City> = emptyList()
+    private lateinit var locationManager: LocationManager
+    private var isAutoLocation = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,8 +47,15 @@ class AdhanActivity : AppCompatActivity() {
             finish()
         }
 
+        binding.location.setOnLongClickListener {
+            detectLocationAndFetchPrayerTimes()
+            true
+        }
+
         binding.location.setOnClickListener {
-            showCitySelectionDialog()
+            if (!isAutoLocation) {
+                showCitySelectionDialog()
+            }
         }
     }
 
@@ -245,6 +260,60 @@ class AdhanActivity : AppCompatActivity() {
         val hours = parts[0].toInt()
         val minutes = parts[1].toInt()
         return hours + minutes / 60.0
+    }
+
+    private fun detectLocationAndFetchPrayerTimes() {
+        isAutoLocation = true
+        binding.location.text = "Mendeteksi lokasi..."
+        locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, object : LocationListener {
+                override fun onLocationChanged(location: Location) {
+                    fetchPrayerTimesByLocation(location.latitude, location.longitude)
+                }
+                override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+                override fun onProviderEnabled(provider: String) {}
+                override fun onProviderDisabled(provider: String) {}
+            }, null)
+        } else {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 100)
+        }
+    }
+
+    private fun fetchPrayerTimesByLocation(lat: Double, lng: Double) {
+        val url = "https://api.aladhan.com/v1/timings?latitude=$lat&longitude=$lng&method=2"
+        val request = Request.Builder().url(url).build()
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                runOnUiThread {
+                    binding.location.text = "Gagal deteksi lokasi: ${e.message}"
+                    isAutoLocation = false
+                }
+            }
+            override fun onResponse(call: Call, response: Response) {
+                val body = response.body?.string()
+                try {
+                    val json = JSONObject(body)
+                    val data = json.getJSONObject("data")
+                    val timings = data.getJSONObject("timings")
+                    val prayerTimes = mutableListOf<PrayerTime>()
+                    prayerTimes.add(PrayerTime("Fajr", convertTimeToDecimal(timings.getString("Fajr"))))
+                    prayerTimes.add(PrayerTime("Dhuhr", convertTimeToDecimal(timings.getString("Dhuhr"))))
+                    prayerTimes.add(PrayerTime("Asr", convertTimeToDecimal(timings.getString("Asr"))))
+                    prayerTimes.add(PrayerTime("Maghrib", convertTimeToDecimal(timings.getString("Maghrib"))))
+                    prayerTimes.add(PrayerTime("Isha", convertTimeToDecimal(timings.getString("Isha"))))
+                    runOnUiThread {
+                        adhanAdapter.updateTimes(prayerTimes)
+                        binding.location.text = "Lokasi otomatis: $lat, $lng (Long click untuk manual)"
+                    }
+                } catch (e: Exception) {
+                    runOnUiThread {
+                        binding.location.text = "Gagal parsing jadwal shalat"
+                        isAutoLocation = false
+                    }
+                }
+            }
+        })
     }
 
     override fun onDestroy() {
