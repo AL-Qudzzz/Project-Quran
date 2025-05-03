@@ -73,6 +73,7 @@
                     android:textSize="18sp"/>
 
                 <LinearLayout
+                    android:id="@+id/arabic_types"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -91,6 +92,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/arabic_font_size"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -109,6 +111,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/colored_tajwid"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -145,6 +148,7 @@
                     android:textSize="18sp"/>
 
                 <LinearLayout
+                    android:id="@+id/enable_latin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -163,6 +167,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/latin_font_size"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -199,6 +204,7 @@
                     android:textSize="18sp"/>
 
                 <LinearLayout
+                    android:id="@+id/enable_translation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -217,6 +223,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/translation_font_size"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -235,6 +242,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/translator"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -251,9 +259,6 @@
                         android:text="Translator"
                         android:paddingStart="8dp"/>
                 </LinearLayout>
-
-
-
 
             </LinearLayout>
         </LinearLayout>
