@@ -63,23 +63,38 @@ class AdhanActivity : AppCompatActivity() {
     }
 
     private fun updateDateTime() {
-        val gregorianFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
-        binding.dateGregorian.text = gregorianFormat.format(Date())
+        val gregorianFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+        val today = Date()
+        binding.dateGregorian.text = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(today)
 
-        val hijriCalendar = Calendar.getInstance()
-        val hijriOffset = 1389
-        hijriCalendar.add(Calendar.YEAR, -hijriOffset)
-
-        val hijriMonths = arrayOf(
-            "Muharram", "Safar", "Rabi'ul Awal", "Rabi'ul Akhir",
-            "Jumadil Awal", "Jumadil Akhir", "Rajab", "Sya'ban",
-            "Ramadhan", "Syawal", "Dzulqa'dah", "Dzuhijjah"
-        )
-
-        val day = hijriCalendar.get(Calendar.DAY_OF_MONTH)
-        val month = hijriCalendar.get(Calendar.MONTH)
-        val year = hijriCalendar.get(Calendar.YEAR)
-        binding.dateHijri.text = "$day ${hijriMonths[month]} ${year}H"
+        val dateStr = gregorianFormat.format(today)
+        val url = "https://api.aladhan.com/v1/gToH?date=$dateStr"
+        val request = Request.Builder().url(url).build()
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                runOnUiThread {
+                    binding.dateHijri.text = "Hijri: Error"
+                }
+            }
+            override fun onResponse(call: Call, response: Response) {
+                val body = response.body?.string()
+                try {
+                    val json = JSONObject(body)
+                    val hijri = json.getJSONObject("data").getJSONObject("hijri")
+                    val day = hijri.getString("day")
+                    val month = hijri.getJSONObject("month").getString("en")
+                    val year = hijri.getString("year")
+                    val hijriText = "$day $month $year H"
+                    runOnUiThread {
+                        binding.dateHijri.text = hijriText
+                    }
+                } catch (e: Exception) {
+                    runOnUiThread {
+                        binding.dateHijri.text = "Hijri: Error"
+                    }
+                }
+            }
+        })
     }
 
     private fun loadCityList() {
