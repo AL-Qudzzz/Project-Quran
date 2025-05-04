@@ -1,5 +1,6 @@
 package com.example.projectgrup6.adapter
 
+import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,7 +32,17 @@ class SurahAdapter(
         holder.surahName.text = surah.nama
         holder.surahDetails.text = "${surah.type} - ${surah.ayat} verses"
 
-        holder.itemView.setOnClickListener { onClick(surah) }
+        holder.itemView.setOnClickListener { 
+            // Update last read when surah is clicked
+            val sharedPreferences = holder.itemView.context.getSharedPreferences("MyQuranPreferences", android.content.Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.putInt("LAST_SURAH_NUMBER", surah.nomor)
+            editor.putString("LAST_SURAH_NAME", surah.nama)
+            editor.putInt("LAST_SURAH_AYAH", 1) // Start from first ayah
+            editor.apply()
+            
+            onClick(surah)
+        }
     }
 
     override fun getItemCount() = surahList.size

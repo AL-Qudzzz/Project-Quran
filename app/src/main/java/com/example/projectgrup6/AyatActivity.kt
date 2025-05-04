@@ -23,6 +23,8 @@ class AyatActivity : AppCompatActivity() {
     private lateinit var ayatAdapter: AyatAdapter
     private lateinit var surah: Surah2
     private lateinit var sharedPreferences: SharedPreferences
+    private var currentSurahNumber: Int = 1
+    private var currentSurahName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,16 +44,16 @@ class AyatActivity : AppCompatActivity() {
         }
 
         // Mendapatkan nomor surah dari Intent
-        val surahNumber = intent.getIntExtra("SURAH_NUMBER", 1)
-        val surahName = intent.getStringExtra("SURAH_NAME") ?: "Al-Fatihah"
+        currentSurahNumber = intent.getIntExtra("SURAH_NUMBER", 1)
+        currentSurahName = intent.getStringExtra("SURAH_NAME") ?: "Al-Fatihah"
 
         // Ambil TextView berdasarkan ID
         val judulTextView: TextView = findViewById(R.id.judul)
         // Setel nama surah ke TextView
-        judulTextView.text = surahName
+        judulTextView.text = currentSurahName
 
         // Memanggil API untuk mengambil data ayat dan surah
-        fetchAyatData(surahNumber, surahName)
+        fetchAyatData(currentSurahNumber, currentSurahName)
     }
 
     private fun fetchAyatData(surahNumber: Int, surahName: String) {
@@ -101,6 +103,9 @@ class AyatActivity : AppCompatActivity() {
                         updateLastRead(surahNumber, surah.namaLatin, ayatNumber)
                     }, sharedPreferences)
                     recyclerView.adapter = ayatAdapter
+
+                    // Update last read when surah is first loaded
+                    updateLastRead(surahNumber, surah.namaLatin, 1)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
