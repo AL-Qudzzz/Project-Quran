@@ -104,6 +104,31 @@ class AyatActivity : AppCompatActivity() {
                     }, sharedPreferences)
                     recyclerView.adapter = ayatAdapter
 
+                    // Tambah Listener untuk simpan Last Read saat scroll berhenti
+                    recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                        override fun onScrollStateChanged(
+                            recyclerView: RecyclerView,
+                            newState: Int
+                        ) {
+                            super.onScrollStateChanged(recyclerView, newState)
+                            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                                val layoutManager =
+                                    recyclerView.layoutManager as? LinearLayoutManager
+                                if (layoutManager != null && surah.ayat.isNotEmpty()) {
+                                    val lastVisiblePos = layoutManager.findLastVisibleItemPosition()
+                                    if (lastVisiblePos != RecyclerView.NO_POSITION && lastVisiblePos < surah.ayat.size) {
+                                        val lastAyat = surah.ayat[lastVisiblePos]
+                                        updateLastRead(
+                                            currentSurahNumber,
+                                            surah.namaLatin,
+                                            lastAyat.nomor
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    })
+
                     // Update last read when surah is first loaded
                     updateLastRead(surahNumber, surah.namaLatin, 1)
                 }

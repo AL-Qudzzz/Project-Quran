@@ -91,7 +91,7 @@ class AyatAdapter(
                 else -> 15f // Medium
             }
             holder.transliterationText.textSize = latinFontSize
-            holder.transliterationText.text = Html.fromHtml(ayat.tr, Html.FROM_HTML_MODE_LEGACY)
+        holder.transliterationText.text = Html.fromHtml(ayat.tr, Html.FROM_HTML_MODE_LEGACY)
             holder.transliterationText.visibility = View.VISIBLE
         } else {
             holder.transliterationText.visibility = View.GONE
@@ -126,7 +126,7 @@ class AyatAdapter(
                     }
                 }
                 else -> {
-                    holder.translationText.text = ayat.idn
+        holder.translationText.text = ayat.idn
                 }
             }
             holder.translationText.visibility = View.VISIBLE

@@ -62,6 +62,11 @@ class ReadQuranActivity : AppCompatActivity() {
         fetchSurahData()
     }
 
+    override fun onResume() {
+        super.onResume()
+        updateLastReadUI()
+    }
+
     private fun updateLastReadUI() {
         val sharedPreferences = getSharedPreferences("MyQuranPreferences", MODE_PRIVATE)
         val lastSurahName = sharedPreferences.getString("LAST_SURAH_NAME", null)
@@ -70,7 +75,7 @@ class ReadQuranActivity : AppCompatActivity() {
         val lastReadSurahTextView = findViewById<TextView>(R.id.lastReadSurah)
 
         if (lastSurahName != null && lastSurahAyah != -1) {
-            lastReadSurahTextView.text = "$lastSurahName: Ayat $lastSurahAyah"
+            lastReadSurahTextView.text = "$lastSurahName\nAyat: $lastSurahAyah"
         } else {
             lastReadSurahTextView.text = "---"
         }

@@ -9,6 +9,8 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.view.animation.RotateAnimation
 import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import kotlin.math.*
@@ -16,6 +18,7 @@ import kotlin.math.*
 class QiblaActivity : AppCompatActivity(), SensorEventListener, LocationListener {
 
     private lateinit var compassImage: ImageView
+    private lateinit var locationInfo: TextView
     private lateinit var sensorManager: SensorManager
     private var accelerometer: Sensor? = null
     private var magnetometer: Sensor? = null
@@ -35,6 +38,7 @@ class QiblaActivity : AppCompatActivity(), SensorEventListener, LocationListener
         setContentView(R.layout.compas_main)
 
         compassImage = findViewById(R.id.compassImage)
+        locationInfo = findViewById(R.id.locationInfo)
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
@@ -43,8 +47,10 @@ class QiblaActivity : AppCompatActivity(), SensorEventListener, LocationListener
         locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1f, this)
+            locationInfo.text = "Detecting location..."
         } else {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+            locationInfo.text = "Location permission required"
         }
 
         findViewById<ImageView>(R.id.btn_back).setOnClickListener { finish() }
@@ -116,7 +122,23 @@ class QiblaActivity : AppCompatActivity(), SensorEventListener, LocationListener
     override fun onLocationChanged(location: Location) {
         userLat = location.latitude
         userLng = location.longitude
+        locationInfo.text = "Location: ${String.format("%.4f", userLat)}, ${String.format("%.4f", userLng)}"
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 1) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1f, this)
+                    locationInfo.text = "Detecting location..."
+                }
+            } else {
+                locationInfo.text = "Location permission denied"
+                Toast.makeText(this, "Location permission is required for accurate Qibla direction", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
 }
